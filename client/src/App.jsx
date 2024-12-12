@@ -10,16 +10,14 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Handle file selection
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       setFile(selectedFile);
-      setError(""); // Reset error if any
+      setError(""); 
     }
   };
 
-  // Handle file upload and sending to the server
   const handleUpload = async () => {
     if (!file) {
       setError("Please select an Excel file");
@@ -28,13 +26,12 @@ const App = () => {
     setLoading(true);
     setError("");
 
-    // Read the Excel file
     const reader = new FileReader();
     reader.onload = async (e) => {
       try {
         const d = e.target.result;
         const workbook = XLSX.read(d, { type: "array" });
-        const sheetName = workbook.SheetNames[0]; // Get the first sheet
+        const sheetName = workbook.SheetNames[0]; 
         const sheet = workbook.Sheets[sheetName];
 
         const jsonData = cleanData(XLSX.utils.sheet_to_json(sheet));
@@ -107,7 +104,6 @@ const App = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
-                    backgroundColor: "#f2f2f2",
                     border: "1px solid #ddd",
                   }}
                 >
