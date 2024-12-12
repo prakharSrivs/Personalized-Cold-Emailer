@@ -12,13 +12,12 @@ Before running the server, ensure you have the following:
 - **PostgreSQL** database set up and running. You will need to configure the database connection in the server's environment variables.
 - Install the required dependencies by running:
 
-  ```bash
-  npm install
-``
+    ```bash
+    npm install
+
 ### Running the Server
 Navigate to the server folder and start the server :
 
     ```bash
     node index.js
-    ``
 
