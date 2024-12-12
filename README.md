@@ -25,3 +25,11 @@ Navigate to the server folder and start the server :
 Headless Mode: The scraping is performed using Puppeteer in non-headless mode (headless: false) to allow you to manually complete any security checks or CAPTCHA prompts that may appear due to frequent use of the email address associated with the scraping process.
 
 Retries for Profile Extraction: For each LinkedIn profile, the script will attempt to extract the information up to 3 times in case of any errors or failed attempts. This ensures higher reliability in data extraction.
+
+## Client Setup
+
+Navigate to the client and start the server using the command
+	```bash
+	npm run dev
+
+
