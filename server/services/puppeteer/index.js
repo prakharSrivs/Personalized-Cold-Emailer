@@ -4,7 +4,7 @@ import { generateColdEmail, processingImageText } from "../open-ai/index.js";
 import { updateColdEmailContent, updateProfileSummary } from "../../db/user_profiles.js";
 
 const profileInfo = {
-    email : "prakharsrivwork@gmail.com",
+    email : "brunosrivastava03@gmail.com",
     password: "Kumar1234##"
 }
 
@@ -59,7 +59,7 @@ export async function scrapeLinkedinProfiles(data) {
 
     if( currentUrl !== 'https://linkedin.in/feed' ) {
         console.log("Perform Security Checks");
-        await new Promise(resolve => setTimeout(resolve, 20 * 1000));
+        await new Promise(resolve => setTimeout(resolve, 10 * 1000));
     }
 
     for (let row of data) {

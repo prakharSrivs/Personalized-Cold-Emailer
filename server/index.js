@@ -2,8 +2,10 @@ import("dotenv")
 import { pool } from "./db/config.js";
 import { scrapeLinkedinProfiles } from "./services/puppeteer/index.js";
 import express from "express"
+import cors from "cors"
 const app = express();  
 
+app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
@@ -16,13 +18,14 @@ app.get('/fetch/data', (req, res) => {
 
 app.post('/process',async (req, res) => {
     const { data } = req.body;
+    if( !data ) return res.sendStatus(404)
     await scrapeLinkedinProfiles(JSON.parse(data));
-    return res.sendStatus(201);
+    return res.status(201).send("Data Created");
 })
 
 // Dev - feature
 app.get('/delete/all', async (req, res) => {
-    const result = await pool.query('DELETE FROM user_profiles WHERE status = $1', ['PROFILE_EXTRACTED']);
+    const result = await pool.query('DELETE FROM user_profiles WHERE true', []);
     return res.sendStatus(200)
 })
 
