@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import dotenv from 'dotenv'
+import { imageUrlToBase64 } from "../../utils.js";
 dotenv.config();
 
 const client = new OpenAI({
@@ -21,6 +22,22 @@ export async function processingImageText(imageUrl) {
     return result?.choices[0]?.message;
 }
 
-export async function creatingColdEmail(summary) {
-    
+export async function generateColdEmail(profileSummary) {
+    const prompt = `
+        Based on the following LinkedIn profile summary, write a personalized cold email promoting a product that automates the recruitment process using voice-based AI agents. The email should be professional, relevant, and personalized to the individual.
+
+        Profile Summary: 
+        ${profileSummary}
+
+        The product helps companies streamline recruitment through an AI-driven system that automates initial interviews, saving time and improving hiring accuracy. Focus on the benefits of automating the recruitment process and how this solution can help the individual/company in their specific field or role. Make the email sound engaging but professional.
+
+        The email should have a subject, greeting, body, and closing.
+    `;
+
+    const result = await client.chat.completions.create({
+        messages: [{ role: 'user', content: prompt }],
+        model: 'gpt-4-turbo',
+    });
+
+    return result?.choices[0]?.message.content;
 }

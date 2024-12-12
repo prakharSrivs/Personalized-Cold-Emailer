@@ -1,7 +1,7 @@
 import puppeteer from "puppeteer";
-import { pool } from "../../db/config.js";
 import { uploadImageToCloudinary } from "../../utils.js";
-import { processingImageText } from "../open-ai/index.js";
+import { generateColdEmail, processingImageText } from "../open-ai/index.js";
+import { updateColdEmailContent, updateProfileSummary } from "../../db/user_profiles.js";
 
 const profileInfo = {
     email : "prakharsrivwork@gmail.com",
@@ -55,6 +55,13 @@ export async function scrapeLinkedinProfiles(data) {
     await page.setViewport({width: 1080, height: 1024});
     await loginToLinkedin(page, profileInfo.email, profileInfo.password);
     console.log("Logged In - Now viewing profiles")
+    const currentUrl = await page.url();
+    console.log(currentUrl)
+
+    if( currentUrl !== 'https://linkedin.in/feed' ) {
+        console.log("Perform Security Checks");
+        await new Promise(resolve => setTimeout(resolve, 20 * 1000));
+    }
 
     for (let row of data) {
         let attemptsLeft = 3; // Make 3 attempts incase of any errors
@@ -63,13 +70,9 @@ export async function scrapeLinkedinProfiles(data) {
                 const profile = await generateProfileSummary(page, row);
                 if( profile.trim().length == 0 ) throw new Error("Incomplete Information"); 
                 attemptsLeft = 0;
-                console.log(profile)
-                await pool.query(
-                    `INSERT INTO user_profiles 
-                    (linkedin_profile_url, mobile_number, profile_content, cold_email_content, status)
-                    VALUES ($1, $2, $3, $4, $5)`, 
-                    [row.linkedinProfileUrl, row.mobileNumber, profile, "", "PROFILE_EXTRACTED"]
-                );
+                updateProfileSummary(row.linkedinProfileUrl, row.mobileNumber, profile);
+                const coldEmailContent = await generateColdEmail(profile);
+                updateColdEmailContent(coldEmailContent, row.linkedinProfileUrl)
             }catch (e) {
                 console.log(e);
                 attemptsLeft--;
