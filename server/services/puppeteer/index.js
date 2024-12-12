@@ -56,7 +56,6 @@ export async function scrapeLinkedinProfiles(data) {
     await loginToLinkedin(page, profileInfo.email, profileInfo.password);
     console.log("Logged In - Now viewing profiles")
     const currentUrl = await page.url();
-    console.log(currentUrl)
 
     if( currentUrl !== 'https://linkedin.in/feed' ) {
         console.log("Perform Security Checks");
