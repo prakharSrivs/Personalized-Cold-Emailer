@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Grid2, Input, Typography } from '@mui/material'
+import { Alert, Box, Button, Grid, Grid2, Input, Snackbar, Typography } from '@mui/material'
 import axios from 'axios'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -71,11 +71,12 @@ const Onboarding = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate()
 
   const handleSubmit = async () => {
     setLoading(true);
-    if( !username.length && !password.length ) alert("Empty Fields");
+    if( !username.length && !password.length ) setError("Empty Fields");
     try{
       const response = await axios.post("http://localhost:3000/user/access", {username, password}) 
       const data = response.data;
@@ -83,7 +84,7 @@ const Onboarding = () => {
       localStorage.setItem("token",data.token);
       navigate("/app")
     } catch(e) {
-      alert(e.message)
+      setError(e.message)
     } 
     setLoading(false);
   }
@@ -91,6 +92,13 @@ const Onboarding = () => {
 
   return (
     <Box sx={styles.container}>
+      <Snackbar  
+        open={error.length > 0}
+        onClose={()=>setError("")}
+        autoHideDuration={6000}
+      >
+        <Alert severity='error' variant='filled' >{error}</Alert>
+      </Snackbar>
       <LoginBox>
         <Typography sx={styles.headerText}>
           <span style={styles.blueText}>Personalized</span> <br/> Cold Emails
