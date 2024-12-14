@@ -75,8 +75,11 @@ const Onboarding = () => {
   const navigate = useNavigate()
 
   const handleSubmit = async () => {
+    if( !username.length || !password.length ) {
+      setError("Empty Fields");
+      return;
+    } 
     setLoading(true);
-    if( !username.length && !password.length ) setError("Empty Fields");
     try{
       const response = await axios.post("http://localhost:3000/user/access", {username, password}) 
       const data = response.data;
