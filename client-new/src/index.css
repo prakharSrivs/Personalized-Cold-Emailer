@@ -1,0 +1,16 @@
+body {
+  margin: 0;
+  background-color: #1B1B1C;
+  height: 100%;
+  width: 100%;
+}
+
+input {
+  outline: none;
+  border: none;
+}
+
+input:focus {
+  outline: none;
+  border: none;
+}

@@ -1,14 +1,14 @@
-async function createTable() {
+import { pool } from "../db/config.js";
+
+export async function createUserProfileTable() {
     const query = `
-        CREATE TABLE IF NOT EXISTS user_profiles (
+        CREATE TABLE IF NOT EXISTS user_profile (
             user_id SERIAL PRIMARY KEY,
-            linkedin_profile_url TEXT NOT NULL,
-            mobile_number TEXT NOT NULL,
-            profile_content TEXT,
-            cold_email_content TEXT,
-            status TEXT DEFAULT 'PENDING'
+            username TEXT NOT NULL,
+            password TEXT NOT NULL
         );
     `;
+
     try {
         const client = await pool.connect();
         console.log("Connected")

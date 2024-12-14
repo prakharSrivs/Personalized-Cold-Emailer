@@ -1,7 +1,7 @@
 import puppeteer from "puppeteer";
 import { uploadImageToCloudinary } from "../../utils.js";
 import { generateColdEmail, processingImageText } from "../open-ai/index.js";
-import { updateColdEmailContent, updateProfileSummary } from "../../db/user_profiles.js";
+import { updateColdEmailContent, updateProfileSummary } from "../../db/user_data.js";
 
 const profileInfo = {
     email : "brunosrivastava03@gmail.com",
@@ -35,6 +35,7 @@ async function removeDomElement(page, elementSelector) {
 async function generateProfileSummary(page, data) {
     const { name, linkedinProfileUrl, mobileNumber } = data;
     console.log(name, linkedinProfileUrl)
+
     try {
         await page.goto(`${linkedinProfileUrl}`, { waitUntil: "domcontentloaded" });  
         removeDomElement(page, "#msg-overlay")         
@@ -49,7 +50,8 @@ async function generateProfileSummary(page, data) {
     }
 }
 
-export async function scrapeLinkedinProfiles(data) {
+export async function scrapeLinkedinProfiles(data, user_id) {
+
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
     await page.setViewport({width: 1080, height: 1024});
@@ -57,9 +59,9 @@ export async function scrapeLinkedinProfiles(data) {
     console.log("Logged In - Now viewing profiles")
     const currentUrl = await page.url();
 
-    if( currentUrl !== 'https://linkedin.in/feed' ) {
-        console.log("Perform Security Checks");
-        await new Promise(resolve => setTimeout(resolve, 10 * 1000));
+    if( currentUrl !== "https://www.linkedin.com/feed/" ) {
+        console.log("You have 10 seconds to Perform Security Checks");
+        await new Promise(resolve => setTimeout(resolve, 20 * 1000));
     }
 
     for (let row of data) {
@@ -69,9 +71,9 @@ export async function scrapeLinkedinProfiles(data) {
                 const profile = await generateProfileSummary(page, row);
                 if( profile.trim().length == 0 ) throw new Error("Incomplete Information"); 
                 attemptsLeft = 0;
-                updateProfileSummary(row.linkedinProfileUrl, row.mobileNumber, profile);
+                updateProfileSummary(row.linkedinProfileUrl, row.mobileNumber, profile, user_id);
                 const coldEmailContent = await generateColdEmail(profile);
-                updateColdEmailContent(coldEmailContent, row.linkedinProfileUrl)
+                updateColdEmailContent(coldEmailContent, row.linkedinProfileUrl, user_id)
             }catch (e) {
                 console.log(e);
                 attemptsLeft--;
