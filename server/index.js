@@ -14,10 +14,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Dev feature
-app.get('/user/all', async(req, res) => {
-    const result = await pool.query("SELECT * FROM user_profile");
-    return res.json(result.rows)
-})
+//app.get('/user/all', async(req, res) => {
+//    const result = await pool.query("SELECT * FROM user_profile");
+//    return res.json(result.rows)
+//})
 
 app.post('/user/access', async (req,res) => {
     const { username, password } = req.body;
@@ -60,10 +60,10 @@ app.post('/process', authenticate_jwt, async (req, res) => {
 })
 
 // Dev - feature
-app.get('/delete/all', async (req, res) => {
-    const result = await pool.query('DELETE FROM user_data WHERE true', []);
-    return res.sendStatus(200)
-})
+//app.get('/delete/all', async (req, res) => {
+//    const result = await pool.query('DELETE FROM user_data WHERE true', []);
+//    return res.sendStatus(200)
+//})
 
 app.listen(3000, () => {
     console.log("Server started on PORT 3000");
